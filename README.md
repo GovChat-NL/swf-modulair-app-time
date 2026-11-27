@@ -1,65 +1,92 @@
-> # ⚠️ LET OP: tijdelijke naam
-> Deze repository heet nu `swf-modulair-app-time` omdat dit een pilot is voor een modulaire GovChat,
-> gestart door Súdwest-Fryslân met toestemming van GovChat-NL. Werkt de pilot en is iedereen
-> het eens, dan kan de naam in de toekomst `GovChat-NL-app-time` worden.
+> # ⚠️ NOTE: temporary name
+> This repository has the name `swf-modulair-app-time` because this is a pilot for a modular
+> GovChat. Súdwest-Fryslân started the pilot with the approval of GovChat-NL. If the pilot
+> is a success and all parties agree, the name can become `GovChat-NL-app-time`.
 
 # swf-modulair-app-time
 
-De proefapp van de modulaire GovChat: vijf tools voor datums en tijden, zodat een assistent
-weet welke dag het is. De app is klein gehouden om de hele route te beproeven: repository,
-versie, samenstellen en uitrol. Het is ook het voorbeeld van hoe een app eruitziet.
+The trial app of the modular GovChat. It gives the assistant five tools for dates and
+times. Thus the assistant knows the date of today and can calculate with dates.
 
-De server is [`mcp-time`](https://github.com/TheoBrigitte/mcp-time), een klein
-communityproject. Het is bedoeld om de route te beproeven, niet als productkeuze.
+The app is small on purpose. It is the example of an app: the full app is one file,
+`app.yaml`.
 
-Dit is één van vier repositories die bij elkaar horen:
+The server is [`mcp-time`](https://github.com/TheoBrigitte/mcp-time), a small community
+project. It is here to test the procedure. It is not a product decision.
 
-| Repository | Wat |
+This is one of four repositories that belong together:
+
+| Repository | Function |
 |---|---|
-| [`swf-modulair-kern`](https://github.com/GovChat-NL/swf-modulair-kern) | de kale chat |
-| [`swf-modulair-app-time`](https://github.com/GovChat-NL/swf-modulair-app-time) | de proefapp, en het voorbeeld van hoe een app eruitziet |
-| [`swf-modulair-manager`](https://github.com/GovChat-NL/swf-modulair-manager) | de app-manager, die de uitrol samenstelt; hier staat ook het appcontract |
-| [`swf-modulair-deploy-template`](https://github.com/GovChat-NL/swf-modulair-deploy-template) | de uitrolbasis waar een organisatie één keer een eigen repository van maakt |
+| [`swf-modulair-kern`](https://github.com/GovChat-NL/swf-modulair-kern) | The basic chat. |
+| **`swf-modulair-app-time`** | The trial app, and the example of an app (this repository). |
+| [`swf-modulair-manager`](https://github.com/GovChat-NL/swf-modulair-manager) | The `govchat` command, and the rules for an app. |
+| [`swf-modulair-deploy-template`](https://github.com/GovChat-NL/swf-modulair-deploy-template) | The start point for the deploy repository of an organisation. |
 
-## Wat erin zit
+## The files
 
-| Waar | Wat |
+| File | Function |
 |---|---|
-| `app.yaml` | Wat de app is en wat hij nodig heeft, volgens het [appcontract](https://github.com/GovChat-NL/swf-modulair-manager/blob/main/CONTRACT.md) |
-| `chart/` | De Helm-chart: een Deployment, een Service en een NetworkPolicy |
-| `USECASE.md` | De use case, de testdata, de korte check en het bewijs |
-| `controles/aanwezig.sh` | Toont aan dat de app draait en zijn vijf tools meldt |
-| `controles/afwezig.sh` | Toont aan dat er zonder de app niets van draait |
+| `app.yaml` | Tells GovChat what the app is: the name, the version and the container image. |
+| `README.md` | This document, with the use case and the short check. |
 
-## Gebruiken
+There is no Helm chart. The `govchat` command makes the Kubernetes files from `app.yaml`.
 
-Zet het adres en de versie in de lijst van je uitrolrepository en stel opnieuw samen:
+## Install the app
 
-```yaml
-# stacks/<omgeving>.yaml
-apps:
-  - url: https://github.com/GovChat-NL/swf-modulair-app-time
-    version: v1.0.0
+In the deploy repository of your organisation:
+
+```sh
+./govchat app add time --env acceptatie
 ```
 
-Er is niets in te stellen en er is geen Secret nodig.
+Then commit, open a pull request, and let a second person merge. There are no settings
+and no Secrets.
 
-## Gegevens
+To remove the app:
 
-De app bewaart niets en maakt geen verbinding naar buiten. De NetworkPolicy laat alleen
-LibreChat toe. De beschrijvingen van de vijf tools gaan bij elke vraag mee naar het
-taalmodel (ongeveer 2.200 tokens).
+```sh
+./govchat app remove time --env acceptatie
+```
 
-## Versies
+## Use case
 
-| Wat | Nu |
+- **For whom:** each employee who asks a question about a date or a time limit.
+- **What:** the assistant can get the current date and time and calculate with them. Example: "Which date is it in six weeks?"
+- **Why an app:** a language model does not know the date of today, and it makes errors in date calculations.
+
+Test question: "Hoe laat is het nu in Amsterdam, en welke datum is het over 45 dagen?"
+
+Test data: none. The app uses only the clock of the pod.
+
+## Short check
+
+| Question | Answer |
 |---|---|
-| De app | `1.0.0` |
-| Het image | `docker.io/theo01/mcp-time:0.4.0`, vastgezet op de digest |
+| Does the app process personal data? | No. |
+| Does data go to an external service or to a different language model? | No. The pod cannot connect to other systems. |
+| Does the app keep data? | No. |
+| Which Secrets are necessary? | None. |
+| What does the language model see of the app? | The names and descriptions of five tools (approximately 2,200 tokens for each question), and their answers. |
+| Who owns the server? | A small community project. The image is fixed with a digest. |
 
-## Herkomst
+## Versions
 
-Gevuld vanuit `apps/mcp-time` van de branch `swf/modulairKern` van
-`GovChat-NL/GovChat-NL`, commit `7e2474d` (20 november 2026), en omgezet naar een
-Helm-chart. De licentie is nog niet gekozen; het voorstel is EUPL-1.2 en het besluit ligt
-bij de maintainers van GovChat-NL.
+| Part | Now |
+|---|---|
+| The app | `2.0.0` |
+| The image | `docker.io/theo01/mcp-time:0.4.0`, fixed with a digest |
+
+Version 1.0.0 had a Helm chart and was made for the first tool (the app manager).
+Version 2.0.0 is for the `govchat` command. The server is the same.
+
+## Proof
+
+See the section "Tests" in the README of
+[`swf-modulair-manager`](https://github.com/GovChat-NL/swf-modulair-manager).
+
+## Origin
+
+The content comes from `apps/mcp-time` of the branch `swf/modulairKern` of
+`GovChat-NL/GovChat-NL`, commit `7e2474d` (20 November 2026). The licence is not chosen
+yet. The proposal is EUPL-1.2. The maintainers of GovChat-NL make the decision.
