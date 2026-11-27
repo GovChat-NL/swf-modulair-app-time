@@ -35,4 +35,8 @@ Testvraag: "Hoe laat is het nu in Amsterdam, en welke datum is het over 45 dagen
 
 | Versie | Datum | `aanwezig` | `afwezig` | In de chat |
 |---|---|---|---|---|
-| 1.0.0 | 27 november 2026 | nog niet afgerond | nog niet afgerond | niet getest: het stubmodel kan geen tools aanroepen |
+| 1.0.0 | 27 november 2026 | geslaagd: 5 tools; LibreChat laadt de MCP-server met 5 tools; alleen LibreChat bereikt de pod | geslaagd: na opnieuw samenstellen, uitrollen en `helm uninstall time` geen onderdelen en geen regel in de configuratie | niet getest: het stubmodel kan geen tools aanroepen |
+
+De proef van 27 november 2026 draaide op een eigen kind-cluster (arm64) met kern 0.1.0
+(LibreChat-chart 3.2.1, LibreChat v0.8.9), het stubmodel en de MongoDB uit `local/services.yaml`
+van de kern, samengesteld met de app-manager vanaf mappen op de schijf.
