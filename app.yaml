@@ -1,0 +1,22 @@
+# Wat de app is. Voor elke organisatie gelijk. Volgt het appcontract v1
+# (zie modulair-manager, CONTRACT.md).
+name: time
+version: 1.0.0
+contract: v1
+title: "Datum en tijd"
+description: >-
+  Vijf tools voor datums en tijden. Heeft geen Secret nodig en maakt geen verbinding
+  naar buiten. Een klein communityproject: bedoeld om de route te beproeven, niet als
+  productkeuze.
+kern: ">=0.1.0 <1.0.0"
+chart: chart                 # een map in deze repository
+requires: []
+librechat:
+  mcpServers:
+    time:
+      url: "http://time:8080/mcp"
+      title: "Datum en tijd"
+      pinned: true           # hoort vast bij elke assistent; de medewerker ziet geen menu
+config: {}
+secrets: []
+data: geen                   # de app bewaart niets

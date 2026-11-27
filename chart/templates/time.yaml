@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: time
+  labels: { govchat.app: time }
+spec:
+  selector:
+    matchLabels: { app: time }
+  template:
+    metadata:
+      labels: { app: time, govchat.app: time }
+    spec:
+      automountServiceAccountToken: false
+      securityContext: { runAsNonRoot: true, runAsUser: 65532, seccompProfile: { type: RuntimeDefault } }
+      containers:
+        - name: time
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}@{{ .Values.image.digest }}"
+          args: ["--transport", "stream", "--address", "http://0.0.0.0:8080/mcp"]
+          ports:
+            - containerPort: 8080
+          readinessProbe: { tcpSocket: { port: 8080 } }
+          securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: time
+  labels: { govchat.app: time }
+spec:
+  selector: { app: time }
+  ports:
+    - port: 8080
+---
+# Alleen LibreChat mag de server bereiken, en de server mag zelf nergens heen.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: time
+  labels: { govchat.app: time }
+spec:
+  podSelector:
+    matchLabels: { app: time }
+  policyTypes: ["Ingress", "Egress"]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: { app.kubernetes.io/name: {{ .Values.librechatName }} }
+      ports:
+        - port: 8080
