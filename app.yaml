@@ -1,5 +1,5 @@
 # Wat de app is. Voor elke organisatie gelijk. Volgt het appcontract v1
-# (zie modulair-manager, CONTRACT.md).
+# (zie swf-modulair-manager, CONTRACT.md).
 name: time
 version: 1.0.0
 contract: v1
