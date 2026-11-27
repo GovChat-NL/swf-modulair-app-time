@@ -14,5 +14,5 @@ sid=$(tr -d '\r' < "$hdr" | sed -n 's/^[Mm]cp-[Ss]ession-[Ii]d: *//p')
 post '{"jsonrpc":"2.0","method":"notifications/initialized"}' /dev/null "$sid" >/dev/null
 tools=$(post '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' /dev/null "$sid")
 rm -f "$hdr"
-n=$(printf '%s' "$tools" | grep -o '"name":"' | wc -l)
+n=$(printf '%s' "$tools" | grep -o '"name":"' | wc -l | tr -d ' ')
 if [ "$n" -ge 5 ]; then echo "OK    de server meldt $n tools"; else echo "FAIL  verwacht 5 tools, kreeg $n: $tools"; exit 1; fi
